@@ -1,6 +1,7 @@
 import { useField } from "../hooks/useField";
 import { useSelector } from "react-redux";
 import { RootState } from "..";
+import { useState, useEffect } from "react";
 import riderService from "../services/riderService";
 
 interface TrackRiderArgs {
@@ -13,18 +14,34 @@ export const TrackRider = ({ setMarker, setDest, setCenter }: TrackRiderArgs) =>
     const riderID = useField('text')
     const fpID = useField('text')
     const user = useSelector((state: RootState) => state.user)
+    const [liveTrack, setLiveTrack] = useState<Boolean>(false);
+
+    useEffect(() => {
+        let intervalId: any;
+
+        if (liveTrack) {
+            intervalId = setInterval(() => {
+                track()
+            }, 4000);
+        }
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [liveTrack, track]);
+
+
+
     if (!user) {
         return <></>
     }
 
-
-
-
-
-
-
-    const handleTrack = async (event: any) => {
-        event.preventDefault()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    async function track() {
+        if (!user) {
+            //erro handling here
+            return
+        }
         const rider = await riderService.getRider({ token: user.token, id: riderID.value, fpID: fpID.value })
         console.log(rider)
         const riderPos = {
@@ -38,6 +55,15 @@ export const TrackRider = ({ setMarker, setDest, setCenter }: TrackRiderArgs) =>
             lat: rider.destination.lat,
             lng: rider.destination.lng
         })
+    }
+    const handleTrack = async (event: any) => {
+        event.preventDefault()
+        try {
+            track()
+            setLiveTrack(true)
+        } catch (err) {
+            console.log(err)
+        }
 
     }
 

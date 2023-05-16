@@ -1,9 +1,4 @@
-import axios from 'axios'
-
-const baseUrl = 'http://localhost:5000/'
-
-const url = `${baseUrl}/api/user`
-
+import axios from "./apiClient"
 
 let token: string | null = null
 
@@ -14,14 +9,14 @@ const getUsers = async () => {
     const config = {
         headers: { Authorization: token },
     }
-    const response = await axios.get(url, config)
+    const response = await axios.get("/api/user", config)
     return response.data
 }
 const getUser = async (id: string) => {
     const config = {
         headers: { Authorization: token },
     }
-    const response = await axios.get(`${url}/${id}`, config)
+    const response = await axios.get(`/api/user/${id}`, config)
     return response.data
 }
 

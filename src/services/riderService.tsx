@@ -1,6 +1,7 @@
-import axios from "axios"
 
-const baseUrl = 'http://localhost:5000/api/foodprovider'
+import axios from "./apiClient"
+
+
 
 interface getRiderArgs {
     token: string
@@ -11,11 +12,12 @@ interface getRiderArgs {
 
 
 const getRider = async ({ token, id, fpID }: getRiderArgs) => {
+    console.log("token", token)
     const config = {
         headers: { Authorization: token }
     };
     try {
-        const response = await axios.get(`${baseUrl}/${fpID}/${id}`, config);
+        const response = await axios.get(`/api/foodprovider/${fpID}/${id}`, config);
         return response.data;
     } catch (error) {
         console.log(error);
